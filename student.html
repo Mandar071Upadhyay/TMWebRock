@@ -1,0 +1,212 @@
+<!DOCTYPE HTML>
+<html lang='en'>
+<head>
+<style>
+table
+{
+border:1px solid black;
+border-collapse:collapse;
+}
+table tr,td
+{
+border:1px solid black;
+}
+</style>
+<script src='/TMWebRock1/jquery/jquery.js'></script>
+<script>
+class Student
+{
+constructor(id,name)
+{
+this.id=id;
+this.name=name;
+}
+}
+class StudentService
+{
+getAll()
+{
+var psm=new Promise((done)=>{
+$(()=>{
+$.ajax({
+type : "GET",
+url : "/TMWebRock1/SchoolService/studentService/GetAll",
+success : function(result){
+var object=JSON.parse(result);
+done(object);
+}
+});
+});
+});
+return psm;
+}
+
+add(student)
+{
+var tranferData={
+id:student.id,
+name:student.name
+};
+var jsonString=JSON.stringify(tranferData);
+var psm=new Promise((done)=>{
+$(()=>{
+$.ajax({
+type:'Post',
+url:'/TMWebRock1/SchoolService/studentService/Add',
+data: jsonString,
+success : function(result){
+alert(result);
+done();
+}
+});
+});
+});
+return psm;
+}
+
+update(student)
+{
+var transferData={
+id:student.id,
+name:student.name
+}
+var jsonString=JSON.stringify(transferData);
+var psm=new Promise((done)=>{
+$(()=>{
+$.ajax({
+type:'Post',
+url:'/TMWebRock1/SchoolService/studentService/Update',
+data:jsonString,
+success : function(data){
+done();
+}
+});
+});
+});
+return psm;
+}
+
+delete(id)
+{
+var psm=new Promise((done)=>{
+$(()=>{
+$.ajax({
+type:'Post',
+url:'/TMWebRock1/SchoolService/studentService/Delete?id='+id+'',
+success : function(){
+done();
+}
+});
+});
+});
+return psm;
+}
+
+
+getById(id)
+{
+var psm=new Promise((done)=>{
+$(()=>{
+$.ajax({
+type:'Get',
+url:'/TMWebRock1/SchoolService/studentService/GetById?id='+id+'',
+success : function(result){
+var object=JSON.parse(result);
+$("#rollNumberSpan").text(object.id);
+$("#nameSpan").text(object.name);
+}
+});
+});
+});
+return psm;
+}
+}
+
+$(()=>{
+$("#button1").click(function(){
+var psm=new StudentService().getAll();
+psm.then((data)=>{
+for(var i=0;i<data.length;i++)
+{
+var aa='<tr><td>'+(i+1)+'</td>';
+var bb='<td>'+data[i].name+'</td></tr>'
+$("#table1>tbody").append(aa+bb);
+}
+});
+});
+
+$("#button2").click(function(){
+var id=$("#rollNumber").val();
+var name=$("#name").val();
+var student=new Student(id,name);
+var psm=new StudentService().add(student);
+psm.then(()=>{
+alert("Done");
+});
+});
+
+$("#button3").click(function(){
+var id=$("#rollNumber1").val();
+var name=$("#name1").val();
+var student=new Student(id,name);
+var psm=new StudentService().update(student);
+psm.then(()=>{
+alert("Done");
+});
+});
+
+$("#button4").click(function(){
+var id=$("#rollNumber2").val();
+var psm=new StudentService().delete(id);
+psm.then(()=>{
+alert("Done");
+});
+});
+
+$("#button5").click(function(){
+var id=$("#rollNumber3").val();
+var psm=new StudentService().getById(id);
+psm.then(()=>{
+alert("Done");
+});
+});
+
+
+
+});
+</script>
+</head>
+<body>
+<h1>Thinking Machines</h1>
+<table id='table1'>
+<thead>
+<tr>
+<td>S.no</td>
+<td>Name</td>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</body>
+<button id="button1">getAll</button><br>
+<h1>Add Student Detailes</h1>
+Roll Number :<input type='text' id='rollNumber'><br>
+Name : <input type='text' id='name'><br>
+<button id='button2'>Add Details</button><br>
+
+<h1>Update Details</h1>
+Roll Number :<input type='text' id='rollNumber1'><br>
+Name : <input type='text' id='name1'><br>
+<button id='button3'>Update Details</button><br>
+
+<h1>Delete Details</h1><br>
+Roll Number : <input type="text" id="rollNumber2"><br>
+<button id="button4">Detete Details</button><br>
+
+<h1>Get Details By Id</h1><br>
+Roll Number : <input type="text" id="rollNumber3"><br>
+<button id="button5">Get By Id</button><br>
+<b>Roll Number :</b><span id='rollNumberSpan'></span><br>
+<b>Name :</b><span id='nameSpan'></span>
+</html>

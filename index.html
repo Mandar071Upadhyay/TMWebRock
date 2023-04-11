@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html lang='en'>
+<head>
+<style>
+table
+{
+border: 1px solid black;
+border-collapse : collapse;
+}
+table tr,td
+{
+border: 1px solid black;
+}
+</style>
+<script src='/TMWebRock1/jquery/jquery.js'></script>
+<script>
+class Promise
+{
+constructor(result,success,exception)
+{
+this.result=result;
+this.success=success;
+this.exception=exception;
+}
+}
+class Student
+{
+constructor(rollNumber,name)
+{
+this.rollNumber=rollNumber;
+this.name=name;
+}
+}
+
+class StudentService
+{
+getAll()
+{
+var promise=null;
+$(()=>{
+$.ajax({
+type : "GET",
+url : "/TMWebRock1/SchoolService/studentService/GetAll",
+success : function(result){
+var object=JSON.parse(result);
+promise=new Promise(object,true,null);
+alert(promise);
+}
+});
+});
+}
+
+
+}
+
+$(()=>{
+var getAll=new StudentService();
+getAll.getAll(); 
+});
+</script>
+</head>
+<body>
+<h1>Thinking Machines</h1>
+<table id="table1">
+<thead>
+<tr>
+<td>S.no</td>
+<td>Name</td>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</body>
+</html>
